@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AuthResponse, LoginForm, RegisterForm, Job, JobAnalyzeForm, Resume, Application } from '../types/api';
+import type { AuthResponse, LoginForm, RegisterForm, Job, JobAnalyzeForm, Resume, Application, AnalysisScore, AnalysisRequest } from '../types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -54,6 +54,12 @@ export const jobsAPI = {
   getJobs: (): Promise<Job[]> =>
     api.get('/jobs').then(res => res.data),
   
+  create: (data: { title: string; description: string }): Promise<Job> =>
+    api.post('/jobs', data).then(res => res.data),
+  
+  delete: (id: number): Promise<void> =>
+    api.delete(`/jobs/${id}`).then(res => res.data),
+  
   analyzeJob: (data: JobAnalyzeForm): Promise<Job> =>
     api.post('/jobs/analyze', data).then(res => res.data),
 };
@@ -65,7 +71,7 @@ export const resumesAPI = {
   uploadResume: (file: File): Promise<Resume> => {
     const formData = new FormData();
     formData.append('file', file);
-    return api.post('/resumes/upload', formData, {
+    return api.post('/resumes', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     }).then(res => res.data);
   },
@@ -83,6 +89,11 @@ export const applicationsAPI = {
   
   updateApplication: (id: number, data: { status: string }): Promise<Application> =>
     api.put(`/applications/${id}`, data).then(res => res.data),
+};
+
+export const analysisAPI = {
+  analyzeFit: (data: AnalysisRequest): Promise<AnalysisScore> =>
+    api.post('/analysis/score', data).then(res => res.data),
 };
 
 export default api;

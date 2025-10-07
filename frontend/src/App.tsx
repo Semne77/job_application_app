@@ -10,6 +10,11 @@ import Layout from "./components/Layout/Layout";
 import LoginForm from "./components/Auth/LoginForm";
 import RegisterForm from "./components/Auth/RegisterForm";
 import Dashboard from "./pages/Dashboard";
+import JobsPage from "./pages/JobsPage";
+import AddJobPage from "./pages/AddJobPage";
+import JobDetailPage from "./pages/JobDetailPage";
+import ResumesPage from "./pages/ResumesPage";
+import ApplicationsPage from "./pages/ApplicationsPage";
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
@@ -79,6 +84,56 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <Dashboard />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <JobsPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs/new"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <AddJobPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/jobs/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <JobDetailPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resumes"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ResumesPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/applications"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <ApplicationsPage />
                   </Layout>
                 </ProtectedRoute>
               }

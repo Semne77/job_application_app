@@ -4,6 +4,11 @@ from typing import Optional
 from pydantic import BaseModel, HttpUrl
 
 
+class JobCreateIn(BaseModel):
+    title: str
+    description: str
+
+
 class JobAnalyzeIn(BaseModel):
     """
     Accept either raw job description text OR a URL to fetch.

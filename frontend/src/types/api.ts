@@ -47,3 +47,15 @@ export interface JobAnalyzeForm {
   jd_text?: string;
   url?: string;
 }
+
+export interface AnalysisScore {
+  score: number;
+  reasons: string[];
+  matched_keywords: string[];
+  missing_keywords: string[];
+}
+
+export interface AnalysisRequest {
+  job_id: number;
+  resume_id: number;
+}

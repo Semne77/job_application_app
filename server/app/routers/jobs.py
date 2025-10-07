@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from app.core.auth import get_current_user
 from app.db.database import get_db
 from app.db.models import Job, User
-from app.schemas.jobs import JobAnalyzeIn, JobOut
+from app.schemas.jobs import JobAnalyzeIn, JobOut, JobCreateIn
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -41,6 +41,22 @@ def _guess_title(text: str) -> str:
         if 2 <= len(s) <= 120:
             return s
     return "Untitled role"
+
+
+@router.post("", response_model=JobOut, status_code=status.HTTP_201_CREATED)
+async def create_job(
+    body: JobCreateIn,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Create a new job posting.
+    """
+    row = Job(user_id=current_user.id, title=body.title, description=body.description)
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return row
 
 
 @router.post("/analyze", response_model=JobOut, status_code=status.HTTP_201_CREATED)
@@ -100,3 +116,25 @@ def list_jobs(
         .all()
     )
     return rows
+
+
+@router.delete("/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_job(
+    job_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Delete a job posting.
+    """
+    job = (
+        db.query(Job)
+        .filter(Job.id == job_id, Job.user_id == current_user.id)
+        .first()
+    )
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    db.delete(job)
+    db.commit()
+    return None
